@@ -4,11 +4,69 @@
     android:layout_height="match_parent" >
 
     <TextView
+        android:id="@+id/textView_hello"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:text="@string/hello_world"
         tools:context=".MainActivity" />
+
+    <TextView
+        android:id="@+id/acc_x"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_hello"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="43dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textView_labelX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/acc_x"
+        android:layout_alignBottom="@+id/acc_x"
+        android:layout_marginRight="16dp"
+        android:layout_toLeftOf="@+id/textView_hello"
+        android:text="X:"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView_labelY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView_labelX"
+        android:layout_below="@+id/textView_labelX"
+        android:layout_marginTop="24dp"
+        android:text="Y:"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView_labelZ"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/textView_labelY"
+        android:layout_below="@+id/textView_labelY"
+        android:layout_marginTop="22dp"
+        android:text="Z:"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/acc_y"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView_labelY"
+        android:layout_alignLeft="@+id/acc_x"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/acc_z"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView_labelZ"
+        android:layout_alignBottom="@+id/textView_labelZ"
+        android:layout_alignLeft="@+id/acc_y"
+        android:text="TextView" />
 
 </RelativeLayout>
