@@ -33,7 +33,7 @@ public class MainActivity extends Activity implements SensorEventListener {
                     Socket skt = new Socket("192.168.100.73", 9999);
                     PrintWriter out = new PrintWriter(skt.getOutputStream(),
                             true);
-                    out.print("PUNCH" + direction + " " + force);
+                    out.print("PUNCH " + direction + " " + force);
                     out.close();
                     skt.close();
                 } catch (Exception e) {
