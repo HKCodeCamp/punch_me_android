@@ -19,7 +19,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     public class Punch implements Runnable {
 
         private String direction;
-		private int force;
+        private int force;
 
         public Punch(String direction, int force) {
             // store parameter for later user
@@ -28,17 +28,18 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
 
         public void run() {
-        		if(force > 2){
-	            try {
-	                Socket skt = new Socket("192.168.100.73", 9999);
-	                PrintWriter out = new PrintWriter(skt.getOutputStream(), true);
-	                out.print(direction + " " + force);
-	                out.close();
-	                skt.close();
-	            } catch (Exception e) {
-	                Log.e("punch", "CANNOT CONNECT ", e);
-	            }
-        		}
+            if (force > 2) {
+                try {
+                    Socket skt = new Socket("192.168.100.73", 9999);
+                    PrintWriter out = new PrintWriter(skt.getOutputStream(),
+                            true);
+                    out.print("PUNCH" + direction + " " + force);
+                    out.close();
+                    skt.close();
+                } catch (Exception e) {
+                    Log.e("punch", "CANNOT CONNECT ", e);
+                }
+            }
         }
     }
 
@@ -50,7 +51,6 @@ public class MainActivity extends Activity implements SensorEventListener {
     private Sensor mAccelerometer;
 
     private final float NOISE = (float) 12.0;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,8 +125,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 
             if ((deltaX + deltaY + deltaZ) != 0) {
                 if (deltaY == 0 && deltaZ == 0) {
-                	int force = (int)((int)((Math.abs(deltaX)-12)/18 * 10));
-                	if (deltaX > 0) {
+                    int force = (int) ((int) ((Math.abs(deltaX) - 12) / 18 * 10));
+                    if (deltaX > 0) {
                         Log.d("PUNCH", "RIGHT " + force);
                         Runnable r = new Punch("RIGHT", force);
                         new Thread(r).start();
@@ -138,7 +138,7 @@ public class MainActivity extends Activity implements SensorEventListener {
                 }
 
                 if (deltaX == 0 && deltaZ == 0) {
-                	int force = (int)((int)((Math.abs(deltaY)-12)/18 * 10));
+                    int force = (int) ((int) ((Math.abs(deltaY) - 12) / 18 * 10));
                     if (deltaY > 0) {
                         Log.d("PUNCH", "UP " + force);
                         Runnable r = new Punch("UP", force);
