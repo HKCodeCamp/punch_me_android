@@ -8,8 +8,8 @@ It will send a text to the server to indicate a punch.
 
 ##Message format
 
-	DIRECTION FORCE
-	
+	PUNCH [DIRECTION] [FORCE]
+
 |DIRECTION|
 |---------|
 |LEFT|
