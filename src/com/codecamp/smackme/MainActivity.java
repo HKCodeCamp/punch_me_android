@@ -19,22 +19,26 @@ public class MainActivity extends Activity implements SensorEventListener {
     public class Punch implements Runnable {
 
         private String direction;
+		private int force;
 
-        public Punch(String direction) {
+        public Punch(String direction, int force) {
             // store parameter for later user
             this.direction = direction;
+            this.force = force;
         }
 
         public void run() {
-            try {
-                Socket skt = new Socket("192.168.100.73", 9999);
-                PrintWriter out = new PrintWriter(skt.getOutputStream(), true);
-                out.print(direction);
-                out.close();
-                skt.close();
-            } catch (Exception e) {
-                Log.e("punch", "CANNOT CONNECT ", e);
-            }
+        		if(force > 2){
+	            try {
+	                Socket skt = new Socket("192.168.100.73", 9999);
+	                PrintWriter out = new PrintWriter(skt.getOutputStream(), true);
+	                out.print(direction + " " + force);
+	                out.close();
+	                skt.close();
+	            } catch (Exception e) {
+	                Log.e("punch", "CANNOT CONNECT ", e);
+	            }
+        		}
         }
     }
 
@@ -47,7 +51,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     private final float NOISE = (float) 12.0;
 
-    private Long punchTime;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,25 +125,27 @@ public class MainActivity extends Activity implements SensorEventListener {
 
             if ((deltaX + deltaY + deltaZ) != 0) {
                 if (deltaY == 0 && deltaZ == 0) {
-                    if (deltaX > 0) {
-                        Log.d("PUNCH", "RIGHT");
-                        Runnable r = new Punch("RIGHT");
+                	int force = (int)((int)((Math.abs(deltaX)-12)/18 * 10));
+                	if (deltaX > 0) {
+                        Log.d("PUNCH", "RIGHT " + force);
+                        Runnable r = new Punch("RIGHT", force);
                         new Thread(r).start();
                     } else {
-                        Log.d("PUNCH", "LEFT");
-                        Runnable r = new Punch("LEFT");
+                        Log.d("PUNCH", "LEFT " + force);
+                        Runnable r = new Punch("LEFT", force);
                         new Thread(r).start();
                     }
                 }
 
                 if (deltaX == 0 && deltaZ == 0) {
+                	int force = (int)((int)((Math.abs(deltaY)-12)/18 * 10));
                     if (deltaY > 0) {
-                        Log.d("PUNCH", "UP");
-                        Runnable r = new Punch("UP");
+                        Log.d("PUNCH", "UP " + force);
+                        Runnable r = new Punch("UP", force);
                         new Thread(r).start();
                     } else {
-                        Log.d("PUNCH", "DOWN");
-                        Runnable r = new Punch("DOWN");
+                        Log.d("PUNCH", "DOWN " + force);
+                        Runnable r = new Punch("DOWN", force);
                         new Thread(r).start();
                     }
 
