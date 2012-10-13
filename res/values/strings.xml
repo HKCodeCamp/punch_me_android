@@ -4,5 +4,6 @@
     <string name="hello_world">Hello Code Camp!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Smack Me!</string>
+    <string name="camera_button">Take Picture</string>
 
 </resources>
