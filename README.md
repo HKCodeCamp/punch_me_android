@@ -8,6 +8,8 @@ It will send a text to the server to indicate a punch.
 
 ##Message format
 
+###Send a punch to server
+
 	PUNCH [DIRECTION] [FORCE]
 
 |DIRECTION|
@@ -22,3 +24,11 @@ It will send a text to the server to indicate a punch.
 |-----|
 |0-10|
 
+###Upload an image to server
+
+	IMAGE
+	[data]
+	
+|data|
+|----|
+|blob of image(binary)|
