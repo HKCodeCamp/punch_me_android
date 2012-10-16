@@ -1,20 +1,60 @@
 package com.codecamp.smackme;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements SensorEventListener {
+
+    public class Picture implements Runnable {
+        private byte[] data;
+
+        public Picture(byte[] data) {
+            this.data = data;
+        }
+
+        public void run() {
+            try {
+                Socket skt = new Socket("192.168.5.107", 9999);
+                String message = "IMAGE\n";
+                // PrintWriter out = new PrintWriter(skt.getOutputStream(),
+                // true);
+                // out.print(message);
+                // out.print(data);
+                // out.close();
+                OutputStream outputStream = skt.getOutputStream();
+                outputStream.write(message.getBytes());
+                outputStream.write(data);
+                outputStream.flush();
+                outputStream.close();
+
+                skt.close();
+            } catch (Exception e) {
+                Log.e("punch", "CANNOT CONNECT ", e);
+            }
+        }
+
+    }
 
     public class Punch implements Runnable {
 
@@ -30,7 +70,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         public void run() {
             if (force > 2) {
                 try {
-                    Socket skt = new Socket("192.168.100.73", 9999);
+                    Socket skt = new Socket("192.168.5.107", 9999);
                     PrintWriter out = new PrintWriter(skt.getOutputStream(),
                             true);
                     out.print("PUNCH " + direction + " " + force);
@@ -42,6 +82,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             }
         }
     }
+
+    protected static final int REQ_TAKE_PICTURE = 0;
 
     private float mLastX, mLastY, mLastZ;
     private boolean mInitialized;
@@ -62,6 +104,42 @@ public class MainActivity extends Activity implements SensorEventListener {
                 .getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         mSensorManager.registerListener(this, mAccelerometer,
                 SensorManager.SENSOR_DELAY_NORMAL);
+
+        final Button button = (Button) findViewById(R.id.camera);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                Intent takeIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                takeIntent.setType("image/*");
+                startActivityForResult(
+                        Intent.createChooser(takeIntent, "Select Picture"),
+                        REQ_TAKE_PICTURE);
+            }
+        });
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+            case REQ_TAKE_PICTURE:
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = { MediaStore.Images.Media.DATA };
+                Cursor cursor = getContentResolver().query(selectedImage,
+                        filePathColumn, null, null, null);
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                Log.d("Image", "taken");
+                Runnable r = new Picture(stream.toByteArray());
+                new Thread(r).start();
+
+            }
+        }
     }
 
     @Override
